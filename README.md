@@ -1,4 +1,4 @@
-# Catalog Studio
+# ShopiCat — Shopify Catalog Generator
 
 Point it at **any Shopify store** and get a **print-ready product catalog PDF**.
 React + Vite front end, Vercel serverless functions, and Google Gemini for

@@ -89,8 +89,8 @@ export default function App() {
               <Printer width={17} height={17} />
             </span>
             <span>
-              <span className="block text-sm font-bold leading-tight tracking-tight">Catalog Studio</span>
-              <span className="block text-[11px] leading-tight text-[#8a8880]">Shopify → print-ready PDF</span>
+              <span className="block text-sm font-bold leading-tight tracking-tight">ShopiCat</span>
+              <span className="block text-[11px] leading-tight text-[#8a8880]">Shopify Catalog Generator</span>
             </span>
           </button>
           <Stepper stepIdx={stepIdx} maxReachable={maxReachable} onJump={setStepIdx} />

@@ -1,6 +1,6 @@
 {
-  "name": "catalog-studio",
-  "description": "Turn any Shopify store into a print-ready product catalog PDF, with AI review and a visual editor.",
+  "name": "shopicat",
+  "description": "ShopiCat — Shopify Catalog Generator. Turn any Shopify store into a print-ready product catalog PDF, with AI review and a visual editor.",
   "license": "MIT",
   "private": true,
   "version": "1.0.0",
