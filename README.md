@@ -80,8 +80,8 @@ products) make large PDFs — curate down or lower the widths in
 ```
 api/            Vercel serverless functions (thin wrappers)
   scrape.ts     proxy + paginate Shopify products.json
-  enhance.ts    Gemini copy polish
-server/core.ts  framework-agnostic handlers (shared by api/ and the dev bridge)
+  enhance.ts    Gemini review + copy polish
+  _lib/core.ts  framework-agnostic handlers (shared by api/ and the dev bridge)
 src/
   types.ts            Shopify + catalog data models
   lib/shopify.ts      transform: suffix-strip, price format, html to text, specs

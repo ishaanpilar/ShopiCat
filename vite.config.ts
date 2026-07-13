@@ -1,7 +1,7 @@
 import { defineConfig, type Connect } from 'vite';
 import react from '@vitejs/plugin-react';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { scrape, enhance } from './server/core.ts';
+import { scrape, enhance } from './api/_lib/core.ts';
 
 /**
  * Dev-only API bridge. In production the files in `/api` are deployed as
