@@ -1,7 +1,8 @@
 import { defineConfig, type Connect } from 'vite';
 import react from '@vitejs/plugin-react';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { scrape, enhance } from './api/_lib/core.ts';
+import { scrapeCore } from './api/scrape.ts';
+import { enhanceCore } from './api/enhance.ts';
 
 /**
  * Dev-only API bridge. In production the files in `/api` are deployed as
@@ -36,8 +37,8 @@ function devApi() {
   return {
     name: 'dev-api',
     configureServer(server: { middlewares: Connect.Server }) {
-      route(server, '/api/scrape', scrape);
-      route(server, '/api/enhance', enhance);
+      route(server, '/api/scrape', scrapeCore);
+      route(server, '/api/enhance', enhanceCore);
     },
   };
 }
