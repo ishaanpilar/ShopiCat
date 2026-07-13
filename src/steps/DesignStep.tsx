@@ -1,12 +1,15 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import type { CatalogConfig, CatalogProduct, PhotoFrame, Theme } from '../types';
 import { priceStrings } from '../lib/shopify';
-import { enhanceCatalog } from '../lib/api';
+import { enhanceCatalog, type EnhanceResponse } from '../lib/api';
+import { enhanceDirect } from '../lib/gemini';
+import { getUserKey, setUserKey, clearUserKey } from '../lib/userKey';
 import Catalog, { type CatalogEditor } from '../catalog/Catalog';
 import CatalogViewport from '../components/CatalogViewport';
 import EditorPanel, { type EditorSelection } from '../components/EditorPanel';
+import KeyModal from '../components/KeyModal';
 import { StepHeader } from './CurateStep';
-import { Sparkles, Spinner, Check, Image as ImageIcon, Download, Alert } from '../components/icons';
+import { Sparkles, Spinner, Check, Image as ImageIcon, Download, Alert, X } from '../components/icons';
 
 interface Props {
   products: CatalogProduct[];
@@ -50,6 +53,8 @@ export default function DesignStep({
 }: Props) {
   const [ai, setAi] = useState<AiState>({ status: 'idle' });
   const [selKey, setSelKey] = useState<string | null>(null);
+  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [userKey, setUserKeyState] = useState<string | null>(getUserKey());
   const fileRef = useRef<HTMLInputElement>(null);
   const included = useMemo(() => products.filter((p) => p.included), [products]);
 
@@ -123,32 +128,62 @@ export default function DesignStep({
     );
   };
 
+  function applyResult(res: EnhanceResponse) {
+    if (!res.enabled) {
+      setAi({ status: 'off', reason: res.reason });
+      return;
+    }
+    const map = new Map((res.products ?? []).map((x) => [x.id, x]));
+    let renamed = 0;
+    const warnings: Warning[] = [];
+    setProducts(
+      products.map((p) => {
+        const r = map.get(p.id);
+        if (!r) return p;
+        const name = r.name?.trim() || p.name;
+        if (name !== p.name) renamed++;
+        if (r.flag && r.flag.trim()) warnings.push({ id: p.id, name, flag: r.flag.trim() });
+        return { ...p, name, desc: r.desc?.trim() || p.desc };
+      }),
+    );
+    if (res.tagline) patch({ subtitle: res.tagline });
+    setAi({ status: 'done', count: map.size, renamed, warnings });
+  }
+
+  // Hybrid: use the deployment's server key when present; otherwise call Gemini
+  // directly from the browser with the user's own key (prompting for it once).
   async function polish() {
+    if (userKey) {
+      setAi({ status: 'loading' });
+      applyResult(await enhanceDirect(userKey, storeName, included));
+      return;
+    }
     setAi({ status: 'loading' });
     try {
       const res = await enhanceCatalog(storeName, included);
-      if (res.enabled) {
-        const map = new Map((res.products ?? []).map((x) => [x.id, x]));
-        let renamed = 0;
-        const warnings: Warning[] = [];
-        setProducts(
-          products.map((p) => {
-            const r = map.get(p.id);
-            if (!r) return p;
-            const name = r.name?.trim() || p.name;
-            if (name !== p.name) renamed++;
-            if (r.flag && r.flag.trim()) warnings.push({ id: p.id, name, flag: r.flag.trim() });
-            return { ...p, name, desc: r.desc?.trim() || p.desc };
-          }),
-        );
-        if (res.tagline) patch({ subtitle: res.tagline });
-        setAi({ status: 'done', count: map.size, renamed, warnings });
+      if (res.enabled || res.reason !== 'no-key') {
+        applyResult(res);
       } else {
-        setAi({ status: 'off', reason: res.reason });
+        setAi({ status: 'idle' }); // server has no key → ask the user for theirs
+        setShowKeyModal(true);
       }
     } catch (e) {
       setAi({ status: 'off', reason: (e as Error).message });
     }
+  }
+
+  async function submitKey(key: string, remember: boolean) {
+    setUserKey(key, remember);
+    setUserKeyState(key);
+    setShowKeyModal(false);
+    setAi({ status: 'loading' });
+    applyResult(await enhanceDirect(key, storeName, included));
+  }
+
+  function removeKey() {
+    clearUserKey();
+    setUserKeyState(null);
+    setAi({ status: 'idle' });
   }
 
   // ---- save / load ---------------------------------------------------------
@@ -267,10 +302,25 @@ export default function DesignStep({
               </div>
             )}
             {ai.status === 'off' && (
-              <p className="mt-2 text-xs text-amber-400/90">
-                AI unavailable ({ai.reason || 'no key'}). Using the store’s own titles &amp; descriptions —
-                set <code className="rounded bg-black/40 px-1">GEMINI_API_KEY</code> to enable.
-              </p>
+              <div className="mt-2 text-xs text-amber-400/90">
+                <p>AI unavailable: {ai.reason || 'unknown error'}.</p>
+                <button className="btn-subtle mt-1 text-xs" onClick={() => setShowKeyModal(true)}>
+                  {userKey ? 'Try a different key' : 'Add your Gemini key'}
+                </button>
+              </div>
+            )}
+            {userKey && (
+              <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-2.5 text-[11px] text-[#6c6a64]">
+                <span className="inline-flex items-center gap-1.5">
+                  <Check width={12} height={12} className="text-emerald-500" /> Using your Gemini key
+                </span>
+                <span className="flex gap-2">
+                  <button onClick={() => setShowKeyModal(true)} className="hover:text-[#b9b6ae]">Change</button>
+                  <button onClick={removeKey} className="inline-flex items-center gap-0.5 hover:text-brand">
+                    <X width={11} height={11} /> Remove
+                  </button>
+                </span>
+              </div>
             )}
           </section>
 
@@ -353,6 +403,8 @@ export default function DesignStep({
           </CatalogViewport>
         </div>
       </div>
+
+      {showKeyModal && <KeyModal onSubmit={submitKey} onClose={() => setShowKeyModal(false)} />}
     </div>
   );
 }

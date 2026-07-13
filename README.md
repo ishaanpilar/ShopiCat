@@ -44,16 +44,26 @@ mounts the same handlers as `/api/*`, so you don't need the Vercel CLI.
 
 Deep link for demos: `?store=allbirds.com&go=export` prefills and jumps ahead.
 
-## Enable AI (optional)
+## Enable AI (optional) — hybrid keys
 
-The app works without it — it falls back to the store's own titles & descriptions.
-To turn on the Gemini review/polish, get a free key at
-https://aistudio.google.com/apikey and:
+The app works without AI (it uses the store's own titles & descriptions). To turn
+on the Gemini review/polish there are two paths, and the app picks automatically:
 
-```bash
-cp .env.example .env
-# set GEMINI_API_KEY=...
-```
+1. **Server key (owner-provided).** Set `GEMINI_API_KEY` and every visitor gets AI
+   with zero friction — but they share your key's quota/billing.
+
+   ```bash
+   cp .env.example .env
+   # set GEMINI_API_KEY=...   (free key: https://aistudio.google.com/apikey)
+   ```
+
+2. **User key (BYOK).** If no server key is set, clicking *Review & polish* prompts
+   the visitor for **their own** Gemini key. That key calls Google **directly from
+   the browser** — it never touches this server — and is held only in the browser
+   tab (memory, or sessionStorage if "remember" is checked), never `localStorage`.
+
+For a public deployment, BYOK is usually the right choice: each user spends their
+own free quota instead of draining yours.
 
 Default model is `gemini-flash-lite-latest` (fast, cheap, rarely rate-limited).
 Override with `GEMINI_MODEL` — e.g. `gemini-flash-latest` for higher quality.
