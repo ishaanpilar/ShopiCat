@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0a0a0b;
+  color: #eceae4;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold
+           transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-[#c5322b];
+  }
+  .btn-ghost {
+    @apply btn bg-ink-800 text-[#eceae4] hover:bg-ink-700 ring-1 ring-white/10;
+  }
+  .btn-subtle {
+    @apply btn bg-transparent text-[#98958d] hover:text-[#eceae4] hover:bg-white/5;
+  }
+  .field {
+    @apply w-full rounded-lg bg-ink-900 px-3.5 py-2.5 text-sm text-[#eceae4] ring-1 ring-white/10
+           placeholder:text-[#5c5b57] focus:outline-none focus:ring-2 focus:ring-brand/60;
+  }
+  .label-xs {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a8880];
+  }
+  .card {
+    @apply rounded-2xl bg-ink-900 ring-1 ring-white/[0.06];
+  }
+}
+
+/* Thin custom scrollbars for the app chrome */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #33343a transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2a2b30;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ---------------- print ---------------- */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  /* Neutralise the on-screen preview framing so only the A4 pages print. */
+  .catalog-viewport {
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    border: 0 !important;
+    display: block !important;
+  }
+  .catalog-scaler {
+    transform: none !important;
+    zoom: 1 !important;
+    width: auto !important;
+    margin: 0 !important;
+  }
+}

@@ -1,0 +1,513 @@
+/*
+ * Catalog design system — a faithful port of the blueprint's
+ * catalog_common.py CSS ("Stencil Spec-Sheet"). Every rule is scoped under
+ * .catalog-root so it can't leak into the app chrome. Every colour references
+ * a CSS variable (set per-theme via themeVars()); the two font families are
+ * --display (headlines/prices) and --body (everything else).
+ *
+ * The unit system is millimetres so one .page === one A4 sheet, on screen and
+ * in print alike. "PDF" = the browser's own print-to-PDF of this markup.
+ */
+
+.catalog-root {
+  --bg: #131417;
+  --panel: #1b1c20;
+  --ink: #eceae4;
+  --grey: #98958d;
+  --red: #d93a32;
+  --hairline: rgba(236, 234, 228, 0.16);
+  --hairline-soft: rgba(236, 234, 228, 0.08);
+  --display: 'Saira Stencil One', sans-serif;
+  --body: 'Saira', sans-serif;
+  font-family: var(--body);
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.catalog-root * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.catalog-root .page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  background: var(--bg);
+  padding: 13mm 15mm 11mm 15mm;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.catalog-root .stencil {
+  font-family: var(--display);
+  font-weight: 400;
+}
+
+/* ---------- header / footer bars ---------- */
+.catalog-root .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4mm;
+  border-bottom: 0.35mm solid var(--hairline);
+}
+.catalog-root .head .brand {
+  font-family: var(--display);
+  font-size: 12pt;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.catalog-root .head .h-meta {
+  font-size: 8pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .head .h-meta b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.catalog-root .foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 3.5mm;
+  border-top: 0.35mm solid var(--hairline);
+  font-size: 8pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .foot .pageno {
+  color: var(--ink);
+}
+.catalog-root .foot .pageno span {
+  color: var(--red);
+}
+
+/* ---------- section label ---------- */
+.catalog-root .label {
+  font-size: 8.5pt;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ---------- product page header ---------- */
+.catalog-root .p-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 7mm;
+  gap: 10mm;
+}
+.catalog-root .p-title {
+  font-family: var(--display);
+  font-size: 24pt;
+  line-height: 1.06;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  max-width: 118mm;
+  margin-top: 1.5mm;
+}
+.catalog-root .p-vehicle {
+  font-size: 8.5pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-top: 2mm;
+}
+.catalog-root .p-vehicle .tag {
+  color: var(--red);
+  border: 0.3mm solid var(--red);
+  padding: 0.4mm 2mm 0.7mm;
+  margin-left: 2.5mm;
+  letter-spacing: 1.5px;
+  font-size: 7.5pt;
+}
+.catalog-root .p-price {
+  text-align: right;
+  flex-shrink: 0;
+  margin-top: 1.5mm;
+}
+.catalog-root .p-price .amount {
+  font-family: var(--display);
+  font-size: 24pt;
+  line-height: 1;
+  color: var(--ink);
+}
+.catalog-root .p-price .amount .cur {
+  font-family: var(--body);
+  font-weight: 600;
+}
+.catalog-root .p-price .sub {
+  font-size: 8pt;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-top: 1.5mm;
+}
+
+.catalog-root .p-desc {
+  margin-top: 4.5mm;
+  max-width: 178mm;
+  font-size: 9.5pt;
+  line-height: 1.62;
+  color: var(--grey);
+}
+
+/* ---------- spec table ---------- */
+.catalog-root .spec-table {
+  margin-top: 5mm;
+  border-top: 0.35mm solid var(--hairline);
+}
+.catalog-root .srow {
+  display: flex;
+  align-items: center;
+  gap: 5mm;
+  padding: 3.1mm 0;
+  border-bottom: 0.25mm solid var(--hairline-soft);
+}
+.catalog-root .srow .idx {
+  width: 9mm;
+  flex-shrink: 0;
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-root .srow .key {
+  flex: 1;
+  font-size: 8.5pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .srow .val {
+  text-align: right;
+  font-size: 11.5pt;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.catalog-root .srow .val .vsub {
+  display: block;
+  font-size: 7.5pt;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+  color: var(--grey);
+  text-transform: uppercase;
+  margin-top: 0.6mm;
+}
+
+/* ---------- photos ---------- */
+.catalog-root .photobox {
+  position: relative;
+  width: 100%;
+  background: var(--panel);
+  overflow: hidden;
+}
+.catalog-root .photobox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.catalog-root .photobox.contain {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.catalog-root .photobox.contain img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.catalog-root .product-photos {
+  margin-top: 5.5mm;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: 3mm;
+}
+.catalog-root .product-photos.three {
+  grid-template-columns: 1.55fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.catalog-root .product-photos.three .photobox.main {
+  grid-row: 1 / span 2;
+}
+.catalog-root .product-photos.two {
+  grid-template-columns: 1fr 1fr;
+}
+.catalog-root .product-photos.one {
+  grid-template-columns: 1fr;
+}
+.catalog-root .product-photos .photobox {
+  height: 100%;
+}
+
+/* ---------- editor affordances (screen only) ---------- */
+.catalog-root .photobox.editable {
+  cursor: grab;
+}
+.catalog-root .photobox.editable:active {
+  cursor: grabbing;
+}
+.catalog-root .photobox.editable::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  outline: 0 solid var(--red);
+  outline-offset: -2px;
+  transition: outline-width 0.1s;
+  pointer-events: none;
+  z-index: 2;
+}
+.catalog-root .photobox.editable:hover::after {
+  outline-width: 1.5px;
+  outline-color: rgba(217, 58, 50, 0.5);
+}
+.catalog-root .photobox.selected::after {
+  outline-width: 2.5px;
+  outline-color: var(--red);
+}
+
+.catalog-root .foot-note {
+  font-size: 8pt;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-top: 3.5mm;
+}
+.catalog-root .foot-note::before {
+  content: '— ';
+  color: var(--red);
+}
+
+/* ---------- cover ---------- */
+.catalog-root .cover-frame {
+  position: absolute;
+  inset: 8mm;
+  border: 0.4mm solid var(--hairline);
+  pointer-events: none;
+}
+.catalog-root .page.cover {
+  padding: 16mm 18mm 15mm;
+}
+.catalog-root .cover-title {
+  font-family: var(--display);
+  font-size: 44pt;
+  line-height: 1.04;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 5mm;
+}
+.catalog-root .cover-title .red {
+  color: var(--red);
+}
+.catalog-root .cover-sub {
+  margin-top: 4mm;
+  font-size: 10pt;
+  font-weight: 500;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .cover-info {
+  margin-top: 7mm;
+  display: flex;
+  border-top: 0.35mm solid var(--hairline);
+  border-bottom: 0.35mm solid var(--hairline);
+}
+.catalog-root .cover-info .ci {
+  flex: 1;
+  padding: 3.5mm 0;
+}
+.catalog-root .cover-info .ci + .ci {
+  padding-left: 6mm;
+  border-left: 0.25mm solid var(--hairline-soft);
+}
+.catalog-root .cover-info .ck {
+  font-size: 7.5pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .cover-info .cv {
+  font-size: 12.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 1mm;
+  letter-spacing: 0.5px;
+}
+.catalog-root .cover-photo {
+  margin-top: 7mm;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.catalog-root .cover-photo .photobox {
+  height: 100%;
+}
+.catalog-root .cover-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 5mm;
+}
+.catalog-root .cover-foot .meta {
+  font-size: 8.5pt;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* ---------- contents ---------- */
+.catalog-root .toc-title {
+  font-family: var(--display);
+  font-size: 28pt;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2mm;
+}
+.catalog-root .toc {
+  margin-top: 6mm;
+  border-top: 0.35mm solid var(--hairline);
+}
+.catalog-root .toc-row {
+  display: flex;
+  align-items: center;
+  gap: 5mm;
+  padding: 3.4mm 0;
+  border-bottom: 0.25mm solid var(--hairline-soft);
+}
+.catalog-root .toc-row .idx {
+  width: 10mm;
+  flex-shrink: 0;
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-root .toc-row .tname {
+  flex: 1;
+  font-size: 11.5pt;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.catalog-root .toc-row .tprice {
+  font-size: 9pt;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--grey);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.catalog-root .toc-row .tpage {
+  width: 14mm;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 8.5pt;
+  font-weight: 500;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+
+/* ---------- back ---------- */
+.catalog-root .back-title {
+  font-family: var(--display);
+  font-size: 32pt;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2mm;
+}
+.catalog-root .back-title .red {
+  color: var(--red);
+}
+.catalog-root .contact-table {
+  margin-top: 6mm;
+  border-top: 0.35mm solid var(--hairline);
+  max-width: 120mm;
+}
+.catalog-root .crow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 3.2mm 0;
+  border-bottom: 0.25mm solid var(--hairline-soft);
+}
+.catalog-root .crow .ck {
+  font-size: 8.5pt;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .crow .cv {
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-root .etp {
+  margin-top: 7mm;
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.catalog-root .etp span {
+  color: var(--red);
+}
+.catalog-root .back-photo {
+  margin-top: 8mm;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.catalog-root .back-photo .photobox {
+  height: 100%;
+}
+
+/* ---------- print ---------- */
+@media print {
+  @page {
+    size: 210mm 297mm;
+    margin: 0;
+  }
+  .catalog-root .page {
+    page-break-after: always;
+    break-after: page;
+  }
+  .catalog-root .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}
